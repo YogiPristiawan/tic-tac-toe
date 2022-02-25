@@ -1,6 +1,6 @@
 import { Component, Fragment } from "react";
 import Square from "./Square";
-import Winner from "./Winner";
+import GameResult from "./GameResult";
 
 class Board extends Component {
 	constructor(props) {
@@ -24,7 +24,7 @@ class Board extends Component {
 		];
 	}
 
-	checkWinner(square) {
+	calculateWinner(square) {
 		for (let i = 0; i < this.lines.length; i++) {
 			let [a, b, c] = this.lines[i];
 
@@ -42,7 +42,7 @@ class Board extends Component {
 
 	handleSquareClick(i) {
 		let square = this.state.squares.slice();
-		if (square[i] !== null || this.checkWinner(square)) {
+		if (square[i] !== null || this.calculateWinner(square)) {
 			return;
 		}
 
@@ -73,8 +73,11 @@ class Board extends Component {
 				<div className="board">
 					{templateSquare.map((value, index) => this.renderSquare(index))}
 				</div>
-				{this.checkWinner(this.state.squares) ? (
-					<Winner winner={this.checkWinner(this.state.squares)} />
+
+				{this.calculateWinner(this.state.squares) ? (
+					<GameResult winner={this.calculateWinner(this.state.squares)} />
+				) : !this.state.squares.includes(null) ? (
+					<GameResult draw={true} />
 				) : null}
 			</>
 		);
