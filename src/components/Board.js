@@ -1,6 +1,5 @@
 import { Component, Fragment } from "react";
 import Square from "./Square";
-import GameResult from "./GameResult";
 
 class Board extends Component {
 	constructor(props) {
@@ -11,6 +10,8 @@ class Board extends Component {
 			xIsNext: true,
 			winner: null,
 		};
+
+		this.templateSquare = new Array(9).fill(null);
 
 		this.lines = [
 			[0, 1, 2],
@@ -24,7 +25,33 @@ class Board extends Component {
 		];
 	}
 
-	calculateWinner(square) {
+	handleSquareClick(i) {
+		let square = this.state.squares;
+
+		if (square[i] !== null) return;
+
+		this.state.xIsNext ? (square[i] = "X") : (square[i] = "O");
+
+		this.setState({
+			xIsNext: !this.state.xIsNext,
+			squares: square,
+		});
+
+		const winner = this.calculateWinner(this.state.squares);
+
+		if (winner) {
+			this.props.handleWinner(winner);
+			return;
+		}
+
+		if (!this.state.squares.includes(null)) {
+			this.props.handleDraw();
+			return;
+		}
+	}
+
+	calculateWinner = (square) => {
+		console.log("calculateWinner ", square);
 		for (let i = 0; i < this.lines.length; i++) {
 			let [a, b, c] = this.lines[i];
 
@@ -33,27 +60,15 @@ class Board extends Component {
 				square[a] === square[b] &&
 				square[a] === square[c]
 			) {
+				this.setState({
+					winner: square[a],
+				});
 				return square[a];
 			}
 		}
 
-		return null;
-	}
-
-	handleSquareClick(i) {
-		let square = this.state.squares.slice();
-		if (square[i] !== null || this.calculateWinner(square)) {
-			return;
-		}
-
-		this.state.xIsNext ? (square[i] = "X") : (square[i] = "O");
-
-		this.setState({
-			xIsNext: !this.state.xIsNext,
-			squares: square,
-			squareIndex: i,
-		});
-	}
+		return false;
+	};
 
 	renderSquare(i) {
 		return (
@@ -67,18 +82,11 @@ class Board extends Component {
 	}
 
 	render() {
-		const templateSquare = new Array(9).fill(null);
 		return (
 			<>
 				<div className="board">
-					{templateSquare.map((value, index) => this.renderSquare(index))}
+					{this.templateSquare.map((value, index) => this.renderSquare(index))}
 				</div>
-
-				{this.calculateWinner(this.state.squares) ? (
-					<GameResult winner={this.calculateWinner(this.state.squares)} />
-				) : !this.state.squares.includes(null) ? (
-					<GameResult draw={true} />
-				) : null}
 			</>
 		);
 	}
