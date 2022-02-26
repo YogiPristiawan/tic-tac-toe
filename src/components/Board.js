@@ -8,6 +8,7 @@ class Board extends Component {
 		this.state = {
 			squares: Array(9).fill(null),
 			xIsNext: true,
+			nextChar: null,
 			winner: null,
 		};
 
@@ -40,6 +41,9 @@ class Board extends Component {
 		const winner = this.calculateWinner(this.state.squares);
 
 		if (winner) {
+			this.setState({
+				winner: winner,
+			});
 			this.props.handleWinner(winner);
 			return;
 		}
@@ -51,7 +55,6 @@ class Board extends Component {
 	}
 
 	calculateWinner = (square) => {
-		console.log("calculateWinner ", square);
 		for (let i = 0; i < this.lines.length; i++) {
 			let [a, b, c] = this.lines[i];
 
@@ -76,18 +79,19 @@ class Board extends Component {
 				index={i}
 				value={this.state.squares[i]}
 				key={i}
-				onClick={() => this.handleSquareClick(i)}
+				onClick={() => (!this.state.winner ? this.handleSquareClick(i) : null)}
 			/>
 		);
 	}
 
 	render() {
+		console.log("winner ", this.state.winner);
 		return (
-			<>
+			<div className="px-4">
 				<div className="board">
 					{this.templateSquare.map((value, index) => this.renderSquare(index))}
 				</div>
-			</>
+			</div>
 		);
 	}
 }

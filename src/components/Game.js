@@ -1,6 +1,8 @@
 import { Component } from "react";
 import Board from "./Board";
 import GameResult from "./GameResult";
+import Users from "./Users";
+import Inspire from "./Inspire";
 
 class Game extends Component {
 	constructor(props) {
@@ -28,17 +30,21 @@ class Game extends Component {
 	render() {
 		return (
 			<div className="container">
-				<Board
-					calculateWinner={this.calculateWinner}
-					handleWinner={this.handleWinner}
-					handleDraw={this.handleDraw}
-				/>
+				<Inspire />
 
-				{this.state.winner ? (
-					<GameResult winner={this.state.winner} />
-				) : this.state.draw ? (
-					<GameResult draw={true} />
-				) : null}
+				<div className="row">
+					<GameResult
+						winner={this.state.winner ? this.state.winner : null}
+						draw={this.state.draw ? true : false}
+					/>
+					<Board
+						calculateWinner={this.calculateWinner}
+						handleWinner={this.handleWinner}
+						handleDraw={this.handleDraw}
+					/>
+
+					<Users />
+				</div>
 			</div>
 		);
 	}
