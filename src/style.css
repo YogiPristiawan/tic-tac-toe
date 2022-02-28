@@ -31,6 +31,10 @@
 	overflow: auto !important;
 }
 
+.d-flex {
+	display: flex !important;
+}
+
 li {
 	list-style: none;
 }
@@ -182,4 +186,55 @@ body {
 	padding: 1rem;
 	box-sizing: border-box;
 	border-radius: 20px;
+}
+
+.choose-character-bg {
+	background-color: #a0a0a083;
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	z-index: 9999;
+}
+
+.choose-character-card {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 500px;
+	height: 300px;
+	border: 1px solid black;
+	background-color: white;
+	border-radius: 20px;
+	padding: 50px;
+	box-sizing: border-box;
+	text-align: center;
+}
+
+.character {
+	display: flex;
+	justify-content: space-between;
+	width: 70%;
+	margin: 50px auto 0px;
+}
+
+.character button {
+	padding: 20px;
+	box-sizing: border-box;
+	background-color: #ecffff;
+	cursor: pointer;
+	border-radius: 30px;
+	transform: scale(1.1);
+	box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0.5);
+}
+
+.character button:hover {
+	background-color: #d5e6e6;
+	transform: scale(1);
+	box-shadow: none;
+}
+
+.player-character {
 }

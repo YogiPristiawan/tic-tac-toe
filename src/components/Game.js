@@ -1,8 +1,10 @@
-import { Component } from "react";
+import { Component, Fragment } from "react";
 import Board from "./Board";
 import GameResult from "./GameResult";
 import Users from "./Users";
 import Inspire from "./Inspire";
+import ChooseCharacterAlert from "./ChooseCharacterAlert";
+import PlayerCharacter from "./PlayerCharacter";
 
 class Game extends Component {
 	constructor(props) {
@@ -11,6 +13,10 @@ class Game extends Component {
 		this.state = {
 			winner: null,
 			draw: false,
+			computerCharacter: null,
+			userCharacter: null,
+			isComputerTurnFirst: false,
+			showChooseCharacterAlert: true,
 		};
 	}
 
@@ -27,25 +33,64 @@ class Game extends Component {
 		});
 	};
 
+	handleChooseCharacterClick = (character) => {
+		if (character === "X") {
+			this.setState({
+				userCharacter: "X",
+				computerCharacter: "O",
+				showChooseCharacterAlert: false,
+			});
+		} else if (character === "O") {
+			this.setState({
+				userCharacter: "O",
+				computerCharacter: "X",
+				showChooseCharacterAlert: false,
+			});
+		}
+	};
+
+	componentDidMount() {
+		setTimeout(() => {}, 2000);
+	}
+
 	render() {
 		return (
-			<div className="container">
-				<Inspire />
-
-				<div className="row">
-					<GameResult
-						winner={this.state.winner ? this.state.winner : null}
-						draw={this.state.draw ? true : false}
+			<Fragment>
+				{this.state.showChooseCharacterAlert ? (
+					<ChooseCharacterAlert
+						handleClick={(character) =>
+							this.handleChooseCharacterClick(character)
+						}
 					/>
-					<Board
-						calculateWinner={this.calculateWinner}
-						handleWinner={this.handleWinner}
-						handleDraw={this.handleDraw}
-					/>
+				) : null}
 
-					<Users />
+				<div className="container">
+					<Inspire />
+
+					<div className="row">
+						<div>
+							<PlayerCharacter
+								computerCharacter={this.state.computerCharacter}
+								userCharacter={this.state.userCharacter}
+							/>
+							<GameResult
+								winner={this.state.winner ? this.state.winner : null}
+								draw={this.state.draw ? true : false}
+							/>
+						</div>
+						<Board
+							calculateWinner={this.calculateWinner}
+							handleWinner={this.handleWinner}
+							handleDraw={this.handleDraw}
+							computerCharacter={this.state.computerCharacter}
+							userCharacter={this.state.userCharacter}
+							isComputerTurnFirst={this.state.isComputerTurnFirst}
+						/>
+
+						<Users />
+					</div>
 				</div>
-			</div>
+			</Fragment>
 		);
 	}
 }
