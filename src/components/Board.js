@@ -7,9 +7,11 @@ class Board extends Component {
 
 		this.state = {
 			squares: Array(9).fill(null),
+			// squares: ["O", null, "X", null, "X", null, null, "O", "O"],
 			computerTurn: false,
 			nextChar: null,
 			winner: null,
+			availableSquares: Array(9).fill(true),
 		};
 
 		this.templateSquare = new Array(9).fill(null);
@@ -37,49 +39,106 @@ class Board extends Component {
 
 		square[i] = this.props.userCharacter;
 
+		if (this.calculateWinner(square) || this.calculateDraw(square)) return;
+
 		this.setState({
 			computerTurn: !this.state.computerTurn,
 			squares: square,
 		});
-
-		if (!this.calculateWinner(this.state.squares))
-			return this.calculateDraw(this.state.squares);
 	};
 
 	handleComputerTurn = () => {
-		let square = this.state.squares;
-		console.log("--- COMPUTER TURN ---");
+		let squares = this.state.squares;
+		let bestEvaluate = -Infinity;
+		let bestMove = null;
+		for (let i = 0; i < this.state.squares.length; i++) {
+			if (squares[i] === null) {
+				squares[i] = this.props.computerCharacter;
+				const evaluate = this.minimax(squares, 0, false);
+				squares[i] = null;
+				if (bestEvaluate < evaluate) {
+					bestEvaluate = evaluate;
+					bestMove = i;
+				}
+			}
+		}
 
-		if (this.stepToWin(square)) {
-			console.log("stepToWin");
-			if (!this.calculateWinner(this.state.squares))
-				return this.calculateDraw(this.state.squares);
-		} else if (this.preventUserWin(square)) {
-			console.log("preventUserWin");
-			if (!this.calculateWinner(this.state.squares))
-				return this.calculateDraw(this.state.squares);
-		} else if (this.putCharacterInTheMiddle(square)) {
-			console.log("putCharacterInTheMiddle");
-			if (!this.calculateWinner(this.state.squares))
-				return this.calculateDraw(this.state.squares);
-		} else if (this.makePossibleLine(square)) {
-			console.log("makePossibleLine");
-			if (!this.calculateWinner(this.state.squares))
-				return this.calculateDraw(this.state.squares);
-		} else if (this.putCharacterInTheCorner(square)) {
-			console.log("putCharacterInTheCorner");
-			if (!this.calculateWinner(this.state.squares))
-				return this.calculateDraw(this.state.squares);
-		} else if (this.putCharacterInTheEdge(square)) {
-			console.log("putCharacterInTheEdge");
+		if (bestMove !== null) {
+			squares[bestMove] = this.props.computerCharacter;
+			this.setState({
+				computerTurn: !this.state.computerTurn,
+				squares: squares,
+			});
+
 			if (!this.calculateWinner(this.state.squares))
 				return this.calculateDraw(this.state.squares);
 		}
+
+		if (!this.calculateWinner(this.state.squares))
+			return this.calculateDraw(this.state.squares);
+		return null;
+	};
+	/**
+	 * minmax algorithm
+	 */
+
+	calculateResult = (square) => {
+		for (let i = 0; i < this.lines.length; i++) {
+			let [a, b, c] = this.lines[i];
+
+			if (
+				square[a] !== null &&
+				square[a] === square[b] &&
+				square[a] === square[c]
+			) {
+				if (square[a] === this.props.computerCharacter) {
+					return 1;
+				} else if (square[a] === this.props.userCharacter) {
+					return -1;
+				}
+			}
+		}
+
+		// draw;
+		if (!square.includes(null)) return 0;
+
+		return null;
 	};
 
-	//console.log(this.makePossibleLine(square));
+	minimax = (squares, depth, isMaximizing) => {
+		const result = this.calculateResult(squares);
+		if (result !== null) return result;
+		if (isMaximizing) {
+			let maxEvaluate = -Infinity;
+			for (let i = 0; i < squares.length; i++) {
+				if (squares[i] === null) {
+					squares[i] = this.props.computerCharacter;
+					let evaluate = this.minimax(squares, depth + 1, false);
+					squares[i] = null;
+					maxEvaluate = Math.max(evaluate, maxEvaluate);
+				}
+			}
+
+			return maxEvaluate;
+		} else {
+			let minEvaluate = Infinity;
+			for (let i = 0; i < squares.length; i++) {
+				if (squares[i] === null) {
+					squares[i] = this.props.userCharacter;
+					let evaluate = this.minimax(squares, depth + 1, true);
+					squares[i] = null;
+					minEvaluate = Math.min(evaluate, minEvaluate);
+				}
+			}
+
+			return minEvaluate;
+		}
+	};
+
+	/**
+	 * ===================
+	 */
 	makePossibleLine(square) {
-		// console.log("make possible line square ", square);
 		const indexOfComputerCharacter = square
 			.map((v, i) => {
 				if (v === this.props.computerCharacter) return i;
@@ -229,7 +288,6 @@ class Board extends Component {
 			});
 
 			if (inlineCharacters === 2 && indexOfNull !== undefined) {
-				console.log("masuk ke inline character === 2");
 				result = indexOfNull;
 				break;
 			}
@@ -250,7 +308,6 @@ class Board extends Component {
 	};
 
 	calculateWinner = (square) => {
-		console.log("calculate winner");
 		for (let i = 0; i < this.lines.length; i++) {
 			let [a, b, c] = this.lines[i];
 
@@ -271,7 +328,6 @@ class Board extends Component {
 	};
 
 	calculateDraw(square) {
-		console.log("calcualte draw");
 		if (!this.state.squares.includes(null)) {
 			this.props.handleDraw();
 			return true;
