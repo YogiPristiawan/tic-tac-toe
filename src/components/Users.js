@@ -3,9 +3,9 @@ import { Component } from "react";
 class Users extends Component {
 	render() {
 		return (
-			<div className="users-wrapper overflow-auto mt-4">
+			<div className="users-wrapper mt-4">
 				<h3 className="my-2">Users Onlline : </h3>
-				<ul className="users">
+				<ul className="users overflow-auto">
 					<li>
 						rere lorem lorem
 						impsunsfosjeofjsoejfosjefjosejfosejfoiejfsejfiefjaifjajfl

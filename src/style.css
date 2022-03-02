@@ -229,7 +229,7 @@ body {
 .users-container {
 	grid-area: users;
 	height: fit-content;
-	max-width: 200px;
+	max-width: 300px;
 	margin-right: 80px;
 }
 
@@ -316,6 +316,7 @@ body {
 	grid-area: character;
 	height: fit-content;
 	border-radius: 10px;
+	padding: 1rem;
 }
 
 .player img {
@@ -336,6 +337,19 @@ body {
 /**
 responsive
 */
+@media (max-width: 1048px) {
+	.users-container {
+		max-width: 200px !important;
+		margin-right: 30px !important;
+	}
+}
+
+@media (max-width: 992px) {
+	.users-container {
+		margin-right: 30px !important;
+	}
+}
+
 @media (max-width: 768px) {
 	.player {
 		max-width: 200px;
@@ -424,8 +438,10 @@ responsive
 	.game-info {
 		flex-direction: row;
 		align-items: end;
-		margin: 0 auto;
 		width: 350px;
+		margin: 0 auto;
+
+		/* width: 350px; */
 	}
 
 	.winner {
@@ -476,8 +492,6 @@ responsive
 	}
 
 	.board {
-		width: 350px;
-		height: 350px;
 		margin: 0px auto !important;
 		margin-top: 20px !important;
 	}
@@ -491,5 +505,40 @@ responsive
 
 	.winner-large {
 		display: none;
+	}
+}
+
+@media (max-width: 380px) {
+	.board {
+		width: 270px;
+		height: 270px;
+		margin: 0px auto !important;
+		margin-top: 20px !important;
+	}
+
+	.game-info {
+		width: 270px;
+	}
+
+	.row {
+		padding: 0.5rem;
+	}
+
+	.container {
+		width: 100%;
+		padding: 1rem 1.2rem 1rem;
+		text-align: center;
+	}
+
+	.player {
+		padding: 0.7rem;
+	}
+
+	.o-char img {
+		width: 40px;
+	}
+
+	.x-char img {
+		width: 40px;
 	}
 }

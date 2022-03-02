@@ -1,6 +1,6 @@
 const PlayerCharacter = (props) => {
 	return (
-		<div className="player p-3 bg-dark">
+		<div className="player bg-dark">
 			<div className="player-character">
 				<span>🙍‍♂️ You</span>
 				<span> : </span>
