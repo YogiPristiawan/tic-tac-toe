@@ -1,15 +1,17 @@
 const PlayerCharacter = (props) => {
 	return (
-		<div className="player-character p-4">
-			<div className="d-flex">
-				<span>YOU :</span>
+		<div className="player p-3 bg-dark">
+			<div className="player-character">
+				<span>🙍‍♂️ You</span>
+				<span> : </span>
 				<img
 					src={props.userCharacter === "X" ? "/img/x.svg" : "/img/o.svg"}
 					alt=""
 				/>
 			</div>
-			<div className="d-flex">
-				<span>Computer :</span>
+			<div className="player-character mt-2">
+				<span>🤖 AI</span>
+				<span> : </span>
 				<img
 					src={props.computerCharacter === "X" ? "/img/x.svg" : "/img/o.svg"}
 					alt=""

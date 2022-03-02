@@ -359,10 +359,8 @@ class Board extends Component {
 
 	render() {
 		return (
-			<div className="px-4">
-				<div className="board">
-					{this.templateSquare.map((value, index) => this.renderSquare(index))}
-				</div>
+			<div className="board">
+				{this.templateSquare.map((value, index) => this.renderSquare(index))}
 			</div>
 		);
 	}
