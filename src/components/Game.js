@@ -1,10 +1,11 @@
 import { Component, Fragment } from "react";
 import Board from "./Board";
-import GameResult from "./GameResult";
 import Users from "./Users";
 import Inspire from "./Inspire";
 import ChooseCharacterAlert from "./ChooseCharacterAlert";
 import PlayerCharacter from "./PlayerCharacter";
+import Winner from "./Winner";
+import WinnerSmall from "./WinnerSmall";
 
 class Game extends Component {
 	constructor(props) {
@@ -66,18 +67,22 @@ class Game extends Component {
 
 				<div className="container">
 					<Inspire />
-
-					<div className="row">
-						<div>
-							<PlayerCharacter
-								computerCharacter={this.state.computerCharacter}
-								userCharacter={this.state.userCharacter}
-							/>
-							<GameResult
-								winner={this.state.winner ? this.state.winner : null}
-								draw={this.state.draw ? true : false}
-							/>
-						</div>
+				</div>
+				<div className="row">
+					<div className="bg-dark users-container">
+						<Winner
+							winner={
+								this.state.winner
+									? this.state.winner === this.state.computerCharacter
+										? "COMPUTER"
+										: "YOU"
+									: null
+							}
+							draw={this.state.draw ? true : false}
+						/>
+						<Users />
+					</div>
+					<div className="main">
 						<Board
 							calculateWinner={this.calculateWinner}
 							handleWinner={this.handleWinner}
@@ -86,8 +91,23 @@ class Game extends Component {
 							userCharacter={this.state.userCharacter}
 							isComputerTurnFirst={this.state.isComputerTurnFirst}
 						/>
+						<div className="game-info">
+							<PlayerCharacter
+								computerCharacter={this.state.computerCharacter}
+								userCharacter={this.state.userCharacter}
+							/>
 
-						<Users />
+							<WinnerSmall
+								winner={
+									this.state.winner
+										? this.state.winner === this.state.computerCharacter
+											? "COMPUTER"
+											: "YOU"
+										: null
+								}
+								draw={this.state.draw ? true : false}
+							/>
+						</div>
 					</div>
 				</div>
 			</Fragment>

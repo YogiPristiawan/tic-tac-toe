@@ -49,14 +49,14 @@ class Inspire extends Component {
 	}
 	render() {
 		return (
-			<div className="inspire">
-				<h1 id="inspire-text">
+			<div className="inspire bg-dark">
+				<h2 id="inspire-text">
 					{
 						this.state.inspire[
 							Math.floor(Math.random() * this.state.inspire.length)
 						]
 					}
-				</h1>
+				</h2>
 			</div>
 		);
 	}
