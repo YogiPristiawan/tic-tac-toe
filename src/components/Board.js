@@ -7,8 +7,7 @@ class Board extends Component {
 
 		this.state = {
 			squares: Array(9).fill(null),
-			// squares: ["O", null, "X", null, "X", null, null, "O", "O"],
-			computerTurn: false,
+			computerTurn: props.isComputerTurnFirst,
 			nextChar: null,
 			winner: null,
 			availableSquares: Array(9).fill(true),
@@ -338,6 +337,16 @@ class Board extends Component {
 
 	componentDidUpdate() {
 		return this.state.computerTurn ? this.handleComputerTurn() : null;
+	}
+
+	componentDidMount() {
+		if (this.props.isComputerTurnFirst) {
+			this.setState({
+				computerTurn: true,
+			});
+
+			this.handleComputerTurn();
+		}
 	}
 
 	renderSquare(i) {

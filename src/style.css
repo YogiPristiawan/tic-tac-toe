@@ -262,7 +262,8 @@ body {
 	padding: 1rem;
 }
 
-.choose-character-bg {
+.choose-character-bg,
+.how-the-game-starts-bg {
 	background-color: #a0a0a083;
 	position: fixed;
 	top: 0px;
@@ -272,7 +273,8 @@ body {
 	z-index: 9999;
 }
 
-.choose-character-card {
+.choose-character-card,
+.how-the-game-starts-card {
 	position: fixed;
 	top: 50%;
 	left: 50%;
@@ -306,6 +308,46 @@ body {
 
 .character button:hover {
 	background-color: #d5e6e6;
+	transform: scale(1);
+	box-shadow: none;
+}
+
+.game-start-option {
+	display: flex;
+	justify-content: space-between;
+	width: 80%;
+	margin: 50px auto 0px;
+}
+
+.game-start-option button {
+	width: 120px;
+	padding: 20px;
+	box-sizing: border-box;
+	cursor: pointer;
+	border-radius: 10px;
+	font-weight: bold;
+	font-size: 1rem;
+	transform: scale(1.1);
+	box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0.5);
+	font-family: inherit;
+}
+
+.game-start-option button:nth-child(1) {
+	background-color: #21a9e3;
+}
+
+.game-start-option button:nth-child(2) {
+	background-color: #f77f97;
+}
+
+.game-start-option button:nth-child(1):hover {
+	background-color: #21a9e3a1;
+	transform: scale(1);
+	box-shadow: none;
+}
+
+.game-start-option button:nth-child(2):hover {
+	background-color: #f46c8791;
 	transform: scale(1);
 	box-shadow: none;
 }

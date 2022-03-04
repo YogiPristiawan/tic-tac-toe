@@ -6,6 +6,7 @@ import ChooseCharacterAlert from "./ChooseCharacterAlert";
 import PlayerCharacter from "./PlayerCharacter";
 import Winner from "./Winner";
 import WinnerSmall from "./WinnerSmall";
+import HowTheGameStartsAlert from "./HowTheGameStartsAlert";
 
 class Game extends Component {
 	constructor(props) {
@@ -16,8 +17,10 @@ class Game extends Component {
 			draw: false,
 			computerCharacter: null,
 			userCharacter: null,
-			isComputerTurnFirst: false,
+			gameStart: false,
+			isComputerTurnFirst: null,
 			showChooseCharacterAlert: true,
+			showHowTheGameStartsAlert: false,
 		};
 	}
 
@@ -40,20 +43,46 @@ class Game extends Component {
 				userCharacter: "X",
 				computerCharacter: "O",
 				showChooseCharacterAlert: false,
+				showHowTheGameStartsAlert: true,
 			});
 		} else if (character === "O") {
 			this.setState({
 				userCharacter: "O",
 				computerCharacter: "X",
+				showHowTheGameStartsAlert: true,
 				showChooseCharacterAlert: false,
 			});
 		}
 	};
 
-	componentDidMount() {
-		setTimeout(() => {}, 2000);
-	}
+	handleHowGameStartsClick = (player) => {
+		if (player === "computer") {
+			this.setState({
+				isComputerTurnFirst: true,
+				showHowTheGameStartsAlert: false,
+				gameStart: true,
+			});
+		} else if (player === "user") {
+			this.setState({
+				isComputerTurnFirst: false,
+				showHowTheGameStartsAlert: false,
+				gameStart: true,
+			});
+		}
+	};
 
+	renderBoard = () => {
+		return (
+			<Board
+				calculateWinner={this.calculateWinner}
+				handleWinner={this.handleWinner}
+				handleDraw={this.handleDraw}
+				computerCharacter={this.state.computerCharacter}
+				userCharacter={this.state.userCharacter}
+				isComputerTurnFirst={this.state.isComputerTurnFirst}
+			/>
+		);
+	};
 	render() {
 		return (
 			<Fragment>
@@ -62,6 +91,10 @@ class Game extends Component {
 						handleClick={(character) =>
 							this.handleChooseCharacterClick(character)
 						}
+					/>
+				) : this.state.showHowTheGameStartsAlert ? (
+					<HowTheGameStartsAlert
+						handleClick={(player) => this.handleHowGameStartsClick(player)}
 					/>
 				) : null}
 
@@ -83,14 +116,17 @@ class Game extends Component {
 						<Users />
 					</div>
 					<div className="main">
-						<Board
-							calculateWinner={this.calculateWinner}
-							handleWinner={this.handleWinner}
-							handleDraw={this.handleDraw}
-							computerCharacter={this.state.computerCharacter}
-							userCharacter={this.state.userCharacter}
-							isComputerTurnFirst={this.state.isComputerTurnFirst}
-						/>
+						{this.state.gameStart ? (
+							<Board
+								calculateWinner={this.calculateWinner}
+								handleWinner={this.handleWinner}
+								handleDraw={this.handleDraw}
+								computerCharacter={this.state.computerCharacter}
+								userCharacter={this.state.userCharacter}
+								isComputerTurnFirst={this.state.isComputerTurnFirst}
+							/>
+						) : null}
+
 						<div className="game-info">
 							<PlayerCharacter
 								computerCharacter={this.state.computerCharacter}
