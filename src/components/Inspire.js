@@ -41,7 +41,7 @@ class Inspire extends Component {
 			this.setState({
 				inspireText: this.state.inspire[index],
 			});
-		}, 5000);
+		}, 7000);
 	}
 
 	componentWillUnmount() {
@@ -51,11 +51,11 @@ class Inspire extends Component {
 		return (
 			<div className="inspire bg-dark">
 				<h2 id="inspire-text">
-					{
-						this.state.inspire[
-							Math.floor(Math.random() * this.state.inspire.length)
-						]
-					}
+					{this.props.shouldUpdate
+						? this.state.inspire[
+								Math.floor(Math.random() * this.state.inspire.length)
+						  ]
+						: ". . ."}
 				</h2>
 			</div>
 		);

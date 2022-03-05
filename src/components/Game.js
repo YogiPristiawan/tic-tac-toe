@@ -8,6 +8,9 @@ import Winner from "./Winner";
 import WinnerSmall from "./WinnerSmall";
 import HowTheGameStartsAlert from "./HowTheGameStartsAlert";
 import PlayAgain from "./PlayAgain";
+import PlayGame from "./PlayGame";
+import GameOverAlert from "./GameOverAlert";
+import PlayerTurn from "./PlayerTurn";
 
 class Game extends Component {
 	constructor(props) {
@@ -19,12 +22,14 @@ class Game extends Component {
 			winner: null,
 			draw: null,
 			gameOver: false,
-			showChooseCharacterAlert: true,
+			showChooseCharacterAlert: false,
 			showHowTheGameStartsAlert: false,
 			computerTurn: null,
 			squares: Array(9).fill(null),
 			availableSquares: Array(9).fill(true),
 			nextChar: null,
+			gameStart: false,
+			winnerLine: [],
 		};
 
 		this.templateSquare = new Array(9).fill(null);
@@ -47,7 +52,13 @@ class Game extends Component {
 
 	handleSquareClick = (i) => {
 		let square = this.state.squares;
+		if (!this.state.gameStart) {
+			this.setState({
+				showChooseCharacterAlert: true,
+			});
 
+			return;
+		}
 		if (square[i] !== null) return;
 		if (this.state.winner) return;
 		if (this.state.computerTurn) return;
@@ -161,6 +172,8 @@ class Game extends Component {
 				this.setState({
 					winner: square[a],
 					gameOver: true,
+					winnerLine: this.lines[i],
+					showGameOverAlert: true,
 				});
 				return true;
 			}
@@ -174,6 +187,7 @@ class Game extends Component {
 			this.setState({
 				draw: true,
 				gameOver: true,
+				showGameOverAlert: true,
 			});
 			return true;
 		}
@@ -203,16 +217,30 @@ class Game extends Component {
 		if (player === "computer") {
 			this.setState({
 				computerTurn: true,
+				gameStart: true,
 				showHowTheGameStartsAlert: false,
 			});
 			return;
 		} else if (player === "user") {
 			this.setState({
 				computerTurn: false,
+				gameStart: true,
 				showHowTheGameStartsAlert: false,
 			});
 		}
 	};
+
+	handleDismisGameOverAlert = () => {
+		this.setState({
+			showGameOverAlert: false,
+		});
+	};
+
+	handlePlayGame() {
+		this.setState({
+			showChooseCharacterAlert: true,
+		});
+	}
 
 	handlePlayAgain() {
 		this.setState({
@@ -221,16 +249,36 @@ class Game extends Component {
 			winner: null,
 			draw: null,
 			showChooseCharacterAlert: true,
+			winnerLine: [],
 		});
 	}
 
 	componentDidUpdate() {
-		return this.state.computerTurn ? this.handleComputerTurn() : null;
+		if (this.state.computerTurn) {
+			if (this.state.squares.filter((v) => v !== null).length === 0) {
+				setTimeout(() => {
+					this.handleComputerTurn();
+				}, 500);
+			} else {
+				const randomTime = Math.floor(Math.random() * (2000 - 300 + 300) + 300);
+				setTimeout(() => {
+					this.handleComputerTurn();
+				}, randomTime);
+			}
+		}
+		return;
 	}
 
 	render() {
 		return (
 			<Fragment>
+				{this.state.showGameOverAlert ? (
+					<GameOverAlert
+						isDraw={this.state.draw}
+						isUserWin={this.state.winner === this.state.userCharacter}
+						handleClick={() => this.handleDismisGameOverAlert()}
+					/>
+				) : null}
 				{this.state.showChooseCharacterAlert ? (
 					<ChooseCharacterAlert
 						handleClick={(character) =>
@@ -244,7 +292,7 @@ class Game extends Component {
 				) : null}
 
 				<div className="container">
-					<Inspire />
+					<Inspire shouldUpdate={!this.state.computerTurn} />
 				</div>
 				<div className="row">
 					<div className="bg-dark users-container">
@@ -265,6 +313,7 @@ class Game extends Component {
 							squares={this.state.squares}
 							handleSquareClick={(i) => this.handleSquareClick(i)}
 							templateSquare={this.templateSquare}
+							winnerLine={this.state.winnerLine}
 						/>
 
 						<div className="game-info">
@@ -283,7 +332,16 @@ class Game extends Component {
 								}
 								draw={this.state.draw ? true : false}
 							/>
-							{this.state.gameOver ? (
+
+							{this.state.gameStart && !this.state.gameOver ? (
+								<PlayerTurn
+									playerTurn={this.state.computerTurn ? "computer" : "user"}
+								/>
+							) : null}
+
+							{!this.state.gameStart ? (
+								<PlayGame onClick={() => this.handlePlayGame()} />
+							) : this.state.gameOver ? (
 								<PlayAgain onClick={() => this.handlePlayAgain()} />
 							) : null}
 						</div>

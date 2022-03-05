@@ -1,8 +1,8 @@
 const ChooseCharacterAlert = (props) => {
 	return (
-		<div className="choose-character-bg">
+		<div className="overlay">
 			<div className="choose-character-card">
-				<h1>Pilih karaktermu!</h1>
+				<h2>Pilih karaktermu!</h2>
 				<div className="character">
 					<button onClick={() => props.handleClick("X")}>
 						<img src="/img/x.svg" alt="" />
