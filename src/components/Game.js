@@ -11,6 +11,8 @@ import PlayAgain from "./PlayAgain";
 import PlayGame from "./PlayGame";
 import GameOverAlert from "./GameOverAlert";
 import PlayerTurn from "./PlayerTurn";
+import InputUsernameAlert from "./InputUsernameAlert";
+import createSocket from "../network/socket/socketClient";
 
 class Game extends Component {
 	constructor(props) {
@@ -22,6 +24,7 @@ class Game extends Component {
 			winner: null,
 			draw: null,
 			gameOver: false,
+			showInputCharacterAlert: false,
 			showChooseCharacterAlert: false,
 			showHowTheGameStartsAlert: false,
 			computerTurn: null,
@@ -30,6 +33,10 @@ class Game extends Component {
 			nextChar: null,
 			gameStart: false,
 			winnerLine: [],
+
+			username: "",
+			currentUser: [],
+			validateInputUsernameError: null,
 		};
 
 		this.templateSquare = new Array(9).fill(null);
@@ -54,7 +61,7 @@ class Game extends Component {
 		let square = this.state.squares;
 		if (!this.state.gameStart) {
 			this.setState({
-				showChooseCharacterAlert: true,
+				showInputCharacterAlert: true,
 			});
 
 			return;
@@ -103,10 +110,10 @@ class Game extends Component {
 			return this.calculateDraw(this.state.squares);
 		return null;
 	};
+
 	/**
 	 * minmax algorithm
 	 */
-
 	calculateResult = (square) => {
 		for (let i = 0; i < this.lines.length; i++) {
 			let [a, b, c] = this.lines[i];
@@ -195,6 +202,49 @@ class Game extends Component {
 		return false;
 	}
 
+	handleInputUsernameSubmit = (username) => {
+		if (username !== undefined) {
+			this.socket.disconnect();
+			this.socket.io.opts.query.username = username;
+			this.socket.connect();
+
+			this.socket.on("connect", () => {
+				this.setState({
+					showInputCharacterAlert: false,
+					showChooseCharacterAlert: true,
+				});
+			});
+
+			this.socket.on("connect_error", (e) => {
+				this.setState({
+					validateInputUsernameError: e.message,
+				});
+			});
+		}
+	};
+
+	handleFormInputUsernameChange = (e) => {
+		e.preventDefault();
+		if (e.target.value.match(/[^@\w]/gi)) {
+			this.setState({
+				username: e.target.value,
+				validateInputUsernameError:
+					"Username can only contain @, letters, numbers, and underscores.",
+			});
+		} else if (e.target.value.length > 15) {
+			this.setState({
+				username: e.target.value,
+				validateInputUsernameError:
+					"Username cannot be longer than 15 characters",
+			});
+		} else {
+			this.setState({
+				username: e.target.value,
+				validateInputUsernameError: null,
+			});
+		}
+	};
+
 	handleChooseCharacterClick = (character) => {
 		if (character === "X") {
 			this.setState({
@@ -238,7 +288,7 @@ class Game extends Component {
 
 	handlePlayGame() {
 		this.setState({
-			showChooseCharacterAlert: true,
+			showInputCharacterAlert: true,
 		});
 	}
 
@@ -250,6 +300,24 @@ class Game extends Component {
 			draw: null,
 			showChooseCharacterAlert: true,
 			winnerLine: [],
+		});
+	}
+
+	componentDidMount() {
+		this.socket = createSocket({
+			query: {},
+		});
+
+		this.socket.on("userConnected", (args) => {
+			this.setState({
+				currentUser: args.currentUser,
+			});
+		});
+
+		this.socket.on("userDisconnected", (args) => {
+			this.setState({
+				currentUser: args.currentUser,
+			});
 		});
 	}
 
@@ -272,6 +340,16 @@ class Game extends Component {
 	render() {
 		return (
 			<Fragment>
+				{this.state.showInputCharacterAlert ? (
+					<InputUsernameAlert
+						username={this.state.username}
+						handleSubmit={(username) =>
+							this.handleInputUsernameSubmit(username)
+						}
+						validateInputUsernameError={this.state.validateInputUsernameError}
+						handleFormInputUsernameChange={this.handleFormInputUsernameChange}
+					/>
+				) : null}
 				{this.state.showGameOverAlert ? (
 					<GameOverAlert
 						isDraw={this.state.draw}
@@ -306,7 +384,7 @@ class Game extends Component {
 							}
 							draw={this.state.draw ? true : false}
 						/>
-						<Users />
+						<Users currentUser={this.state.currentUser} />
 					</div>
 					<div className="main">
 						<Board

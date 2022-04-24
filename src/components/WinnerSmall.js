@@ -8,7 +8,6 @@ const Winner = (props) => {
 			<div className="winner-user">
 				<div className="border-bottom"></div>
 				<div className="overflow-auto">
-					@yfoafieaufaaf_feafjeasjf
 					{props.winner ? `${props.winner}` : props.draw ? "Draw" : null}
 				</div>
 			</div>

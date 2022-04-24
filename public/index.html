@@ -25,12 +25,35 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans&amp;display=swap"
 			rel="stylesheet"
 		/>
 		<title>React App</title>
+		<script>
+			document.addEventListener("contextmenu", function (e) {
+				e.preventDefault();
+			});
+			document.onkeydown = function (e) {
+				if (event.keyCode == 123) {
+					return false;
+				}
+				if (e.ctrlKey && e.shiftKey && e.keyCode == "I".charCodeAt(0)) {
+					return false;
+				}
+				if (e.ctrlKey && e.shiftKey && e.keyCode == "C".charCodeAt(0)) {
+					return false;
+				}
+				if (e.ctrlKey && e.shiftKey && e.keyCode == "J".charCodeAt(0)) {
+					return false;
+				}
+				if (e.ctrlKey && e.keyCode == "U".charCodeAt(0)) {
+					return false;
+				}
+			};
+		</script>
+		<script id="react-dotenv" src="./env.js"></script>
 	</head>
 	<body>
 		<noscript>You need to enable JavaScript to run this app.</noscript>
